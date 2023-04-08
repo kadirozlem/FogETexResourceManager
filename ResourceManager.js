@@ -1,5 +1,5 @@
 var os = require("os");
-var config=require("./config");
+var config=require("./Config");
 const microtime = require("microtime");
 
 
