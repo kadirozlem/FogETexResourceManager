@@ -4,7 +4,7 @@ let Config = require("./Config");
 io.resource_members = [];
 
 io.on("connection", (socket) => {
-    console.log("User connected");
+    console.log("User connected! Socket ID: "+socket.id);
     io.resource_members.push(socket)
 
     socket.on("disconnect", (reason) => {
@@ -14,7 +14,7 @@ io.on("connection", (socket) => {
         var resource_index = io.resource_members.indexOf(socket);
         if (resource_index !== -1) {
             io.resource_members.splice(resource_index, 1);
-            console.log(socket.user + " element removed from resource_members")
+            console.log(socket.id + " element removed from resource_members")
         }
     });
 });
