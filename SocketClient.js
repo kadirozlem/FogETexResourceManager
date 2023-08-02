@@ -1,9 +1,11 @@
 const { Manager  } = require("socket.io-client");
-const Config = require("../Config");
+const Config = require("./Config");
+const ProjectConfig = require("../../Config")
 const microtime = require("microtime");
 
 class SocketClient{
     constructor(url,member_socket, io) {
+        this.worker_url = url;
         this.url = url+":"+Config.Port;
         this.member_sockets = [member_socket];
         this.io = io;
@@ -25,8 +27,8 @@ class SocketClient{
         }
         if(this.member_sockets.length==0){
             this.close()
-            if(this.io.socket_clients[this.url]){
-                delete this.io.socket_clients[this.url];
+            if(this.io.socket_clients[this.worker_url]){
+                delete this.io.socket_clients[this.worker_url];
             }
         }
 
@@ -37,7 +39,7 @@ class SocketClient{
         const manager = new Manager(this.url, {
             autoConnect: true,
             query: {
-                DeviceType: Config.DeviceTypes.User
+                DeviceType: ProjectConfig.DeviceTypes.User
             }
         });
 
@@ -71,7 +73,7 @@ class SocketClient{
     }
 
     emit(eventName, info){
-        io.member_sockets.forEach(element => element.emit(eventName, info));
+        this.member_sockets.forEach(element => element.emit(eventName, info));
     }
 
 }

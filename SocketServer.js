@@ -12,7 +12,7 @@ io.on("connection", (socket) => {
     if(socket.handshake.query.URL || false){
         socket.worker_url = socket.handshake.query.URL;
         if (io.socket_clients[socket.worker_url]){
-            io.socket_clients.AddMember(socket)
+            io.socket_clients[socket.worker_url].AddMember(socket)
         }else{
             io.socket_clients[socket.worker_url] = new SocketClient(socket.worker_url, socket, io);
         }
