@@ -1,6 +1,7 @@
 var os = require("os");
 var config=require("./Config");
 const microtime = require("microtime");
+const childprocess =require("child_process")
 
 
 class ResourceInfo {
@@ -12,6 +13,8 @@ class ResourceInfo {
         this.totalmem = os.totalmem();
         this.system_uptime = os.uptime();
         this.process_uptime = process.uptime();
+        this.network_stat = this.networkStats();
+        this.network_bandwidth = this.bandwidth(previous)
     }
 
     cpuInfo() {
@@ -61,6 +64,33 @@ class ResourceInfo {
         //console.log("Idle: "+diffence.total.idle+ " - Total" +diffence.total.total+" - Usage:" +diffence.total.usage)
 
         return diffence;
+    }
+
+
+    networkStats(){
+        if(config.IsWindows) {
+           let response = childprocess.execSync('netstat -e').toString().match(/\d+/g)
+            return {
+               RX:{
+                   Bytes: parseInt(response[0]),
+                   Package : parseInt(response[2])+ parseInt(response[4])
+               },
+                TX:{
+                    Bytes: parseInt(response[1]),
+                    Package : parseInt(response[3])+ parseInt(response[5])
+                }
+            }
+        }
+    }
+    bandwidth(previous){
+        let bw = {RX:{Bytes:0, Package:0},TX:{Bytes:0, Package:0}}
+        if(previous) {
+            bw.RX.Bytes = this.network_stat.RX.Bytes - previous.network_stat.RX.Bytes;
+            bw.RX.Package = this.network_stat.RX.Package - previous.network_stat.RX.Package;
+            bw.TX.Bytes = this.network_stat.TX.Bytes - previous.network_stat.TX.Bytes;
+            bw.TX.Package = this.network_stat.TX.Package - previous.network_stat.TX.Package;
+        }
+        return bw;
     }
 }
 
