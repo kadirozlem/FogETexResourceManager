@@ -4,5 +4,6 @@ module.exports={
     ResourceManagerSamplingPeriod:1000,
     ResourceManagerBufferCount:60,
     Port: 17796,
-    IsWindows:os.platform() === 'win32' || os.platform() === 'win64'
+    IsWindows:os.platform() === 'win32' || os.platform() === 'win64',
+    IsMacOS : os.platform() === 'darwin'
 };
